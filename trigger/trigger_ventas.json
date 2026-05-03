@@ -1,5 +1,5 @@
 {
-	"name": "trigger_ventas_diario",
+	"name": "trigger_ventas",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Stopped",
