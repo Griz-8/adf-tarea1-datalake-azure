@@ -1,0 +1,15 @@
+{
+	"name": "df-sisger-datalakeMGCH",
+	"properties": {
+		"trustModeClaimForMi": {
+			"value": "Disabled",
+			"editable": true
+		}
+	},
+	"location": "chilecentral",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "33d5d3b5-a87b-4aff-8484-81ad610cf51b",
+		"tenantId": "cc28633f-12b8-46cb-bc15-951dae239b4d"
+	}
+}
