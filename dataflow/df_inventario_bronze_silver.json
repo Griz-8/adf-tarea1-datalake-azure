@@ -1,0 +1,87 @@
+{
+	"name": "df_inventario_bronze_silver",
+	"properties": {
+		"folder": {
+			"name": "bronze"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "inventario_xlsx",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ventas_sc_limpia_csv",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "derivedColumn2"
+				},
+				{
+					"name": "derivedColumn3"
+				},
+				{
+					"name": "derivedColumn4"
+				},
+				{
+					"name": "filter1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          codigo_producto as string,",
+				"          nombre_producto as string,",
+				"          categoria as string,",
+				"          precio_venta as string,",
+				"          costo_adquisicion as string,",
+				"          stock_actual as string,",
+				"          stock_minimo as string,",
+				"          sucursal as string,",
+				"          proveedor as string,",
+				"          ultima_reposicion as string,",
+				"          activo as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source1",
+				"source1 derive(precio_venta = toFloat(regexReplace(toString(precio_venta), '[^0-9. ]', '')),",
+				"          costo_adquisicion = toFloat(regexReplace(toString(costo_adquisicion), '[^0-9. ]', ''))) ~> derivedColumn1",
+				"derivedColumn1 derive(ultima_reposicion = coalesce(\r",
+				"toDate(ultima_reposicion,'yyyy-MM-dd'),\r",
+				"toDate(ultima_reposicion,'dd-MM-yyyy'),\r",
+				"toDate(ultima_reposicion,'MM-dd-yyyy'),\r",
+				"toDate(ultima_reposicion,'dd/MM/yyyy'),\r",
+				"toDate(ultima_reposicion,'yyyy/MM/dd'),\r",
+				"toDate(ultima_reposicion,'dd/MMM/yyyy'),\r",
+				"toDate(ultima_reposicion,'dd-MMM-yyyy') \r",
+				")) ~> derivedColumn2",
+				"derivedColumn2 derive(activo = iif(     lower(trim(activo)) == 'true' ||     lower(trim(activo)) == 'si' ||     activo == '1',     true(),     false() )) ~> derivedColumn3",
+				"derivedColumn3 derive(stock_actual = toInteger(     regexReplace(         trim(toString(stock_actual)),         '[^0-9-]',         ''     ) ),",
+				"          stock_minimo = toInteger(     regexReplace(         trim(toString(stock_minimo)),         '[^0-9-]',         ''     ) )) ~> derivedColumn4",
+				"derivedColumn4 filter( !isNull(ultima_reposicion) && !isNull(precio_venta) && !isNull(costo_adquisicion)) ~> filter1",
+				"filter1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> sink1"
+			]
+		}
+	}
+}

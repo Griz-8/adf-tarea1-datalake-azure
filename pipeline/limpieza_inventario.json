@@ -1,5 +1,5 @@
 {
-	"name": "limpieza_ventas_sc",
+	"name": "limpieza_inventario",
 	"properties": {
 		"activities": [
 			{
@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "df_venta_lpz_bronze_silver",
+						"referenceName": "df_inventario_bronze_silver",
 						"type": "DataFlowReference"
 					},
 					"compute": {
