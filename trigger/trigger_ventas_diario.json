@@ -1,0 +1,17 @@
+{
+	"name": "trigger_ventas_diario",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Hour",
+				"interval": 1,
+				"startTime": "2026-05-04T20:00:00",
+				"timeZone": "SA Western Standard Time"
+			}
+		}
+	}
+}
